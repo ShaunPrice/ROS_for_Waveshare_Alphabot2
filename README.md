@@ -3,31 +3,32 @@
 This repositiory is a ROS ([Robot Operating System](http://www.ros.org)) implementation for the [Waveshare Alphabot2 Pi](https://www.waveshare.com/product/robotics/alphabot2-pi-acce-pack.htm). IT's based on the  [Ubiquity Robotics](https://ubiquityrobotics.com/) [ROS for Raspberry Pi image](https://downloads.ubiquityrobotics.com/pi.html).
 
 ## TODO
-[ ] Fix issue with the IR Remote not receiving commands.
-[ ] Write a server and node for the ws2812b RGB LED's.
-[ ] Write demo applications.
+- [ ] Fix issue with the IR Remote not receiving commands.
+- [ ] Write a server and node for the ws2812b RGB LED's.
+- [ ] Write demo applications.
 
 ## Getting Started with the Waveshare Alphabot2 and ROS
 To run the ROS package you need to perform the following:
 
-1. [Install the Raspberry Pi Image with ROS](##-Install-the-Raspberry-Pi-Image-with-ROS)
-2. [Install the RGB LED library](##-Install-the-RGB-LED-library)
-3. [Configure the Camera library](##-Configure-the-Camera-Node)
-4. [Install the Servo library](##Install-the-Servo-library)
-5. [Copy over the Waveshare Alphabot2 ROS package code](##-Copy-over-the-Waveshare-Alphabot2-ROS-package-code)
-6. [Compile the ROS package](##-Compile-the-ROS-package)
-7. [Run the sample code to test it works](##-Run-the-sample-code-to-test-it-works)
+1. [Install the Raspberry Pi Image with ROS](#install-the-raspberry-pi-image-with-ros)
+2. [Install the RGB LED library](#install-the-rgb-led-library)
+3. [Configure the Camera library](#configure-the-camera-node)
+4. [Install the Servo library](#install-the-servo-library)
+5. [Copy over the Waveshare Alphabot2 ROS package code](#copy-over-the-waveshare-alphabot2-ros-package-code)
+6. [Compile the ROS package](#compile-the-ros-package)
+7. [Run the sample code to test it works](#run-the-sample-code-to-test-it-works)
 
 ## Install the Raspberry Pi Image with ROS
 Install the Ubiquity Robotics ROS for Raspberry Pi image onto the Raspberry Pi controlling you Waveshare Alphabot2 Pi robot.
 
 Download the image from here:
 
-    [ROS for Raspberry Pi image](https://downloads.ubiquityrobotics.com/pi.html)
+[ROS for Raspberry Pi image](https://downloads.ubiquityrobotics.com/pi.html)
 
 Install the image onto your Raspberry Pi using the Ubiquity Robotics instructions.
 
-Install the RGB LED library
+## Install the RGB LED library
+> This funtion is not currently finished. A server is required due to the permissions required.
 Install the ws2812b RGB LED driver python library for the Raspberry PI:
 
     sudo pip install rpi_ws281x
