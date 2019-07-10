@@ -1,0 +1,9 @@
+<!--
+    This launch file runs the Waveshare Alphabot 2 Robot ROS nodes.
+-->
+
+<launch>
+    <include file="$(find waveshare_alphabot2)/launch/Alphabot2.launch">    
+      <node pkg="waveshare_alphabot2" type="test.py" name="Alphabot2_Test" output="$(arg output)"/>
+  </include>
+</launch>

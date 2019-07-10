@@ -1,0 +1,236 @@
+<robot name="Waveshare_Alphabot2" xmlns:xacro="http://www.ros.org/wiki/xacro">
+<!-- Colour definitions -->
+<material name="black">
+    <color rgba="0.0 0.0 0.0 1.0"/>
+</material>
+<material name="white">
+    <color rgba="0.8 0.8 0.8 1.0"/>
+</material>
+<material name="grey">
+    <color rgba="0.05 0.05 0.05 1.0"/>
+</material>
+<material name="blue">
+    <color rgba="0.0 0.0 1.0 1.0"/>
+</material>
+<!-- * * * Link Definitions * * * -->
+<link name="base_link">
+      <visual>
+        <origin xyz="0 0 0" rpy="0 0 0"/>
+        <axis xyz="0 0 0" />
+        <geometry>
+            <cylinder radius="0.055" length="0.003"/>
+        </geometry>
+        <material name="blue"/>
+    </visual>
+</link>
+<link name="body">
+    <visual>
+        <geometry>
+            <box size="0.1 0.06 0.04"/>
+        </geometry>
+        <material name="grey"/>
+    </visual>
+</link>
+<link name="top">
+      <visual>
+        <origin xyz="0 0 0" rpy="0 0 0"/>
+        <axis xyz="0 0 0" />
+        <geometry>
+            <cylinder radius="0.055" length="0.003"/>
+        </geometry>
+        <material name="blue"/>
+    </visual>
+</link>
+<link name="servoPanNeck">
+    <visual>
+        <geometry>
+            <cylinder radius="0.010" length="0.010"/>
+        </geometry>
+        <material name="black" />
+    </visual>
+</link>
+<link name="servoPan">
+    <visual>
+        <origin xyz="0.0 0.0 0.0" />
+        <geometry>
+            <box size="0.04 0.03 0.03"/>
+        </geometry>
+        <material name="black" />
+    </visual>
+</link>
+<link name="servoTilt">
+    <visual>
+        <origin xyz="0.005 0.0 0.01" />
+        <geometry>
+        <box size="0.02 0.03 0.03"/>
+        </geometry>
+        <material name="black" />
+    </visual>
+</link>
+<link name="camera">
+    <visual>
+        <origin xyz="0 0 0" rpy="0 1.5708 0"/>
+        <geometry>
+            <cylinder radius="0.0075" length="0.005"/>
+        </geometry>
+        <material name="black" />
+    </visual>
+</link>
+<link name="wheelLeft">
+    <visual>
+        <origin xyz="0 0 0" rpy="1.5708 0 0"/>
+        <axis xyz="0 0 0.0" />
+        <geometry>
+            <cylinder radius="0.022" length="0.025"/>
+        </geometry>
+        <material name="black" />
+    </visual>
+</link>
+<link name="wheelRight">
+    <visual>
+        <origin xyz="0 0 0" rpy="1.5708 0 0"/>
+        <axis xyz="0 0 0.0" />
+        <geometry>
+            <cylinder radius="0.022" length="0.025"/>
+        </geometry>
+        <material name="black" />
+    </visual>
+</link>
+<link name="casterFront">
+    <visual>
+        <origin xyz="0 0 0" rpy="0 0 0"/>
+        <axis xyz="0 0 0.0" />
+        <geometry>
+            <cylinder radius="0.005" length="0.01"/>
+        </geometry>
+        <material name="white" />
+    </visual>
+</link>
+<link name="casterBallFront">
+    <visual>
+        <origin xyz="0 0 0" rpy="0 0 0"/>
+        <axis xyz="0 0 0.0" />
+        <geometry>
+            <sphere radius="0.005"/>
+        </geometry>
+        <material name="grey" />
+    </visual>
+</link>
+<link name="casterRear">
+    <visual>
+        <origin xyz="0 0 0" rpy="0 0 0"/>
+        <axis xyz="0 0 0.0" />
+        <geometry>
+            <cylinder radius="0.005" length="0.01"/>
+        </geometry>
+        <material name="white" />
+    </visual>
+</link>
+<link name="casterBallRear">
+    <visual>
+        <origin xyz="0 0 0" rpy="0 0 0"/>
+        <axis xyz="0 0 0.0" />
+        <geometry>
+            <sphere radius="0.005"/>
+        </geometry>
+        <material name="grey" />
+    </visual>
+</link>
+<!-- Body -->
+<joint name="body_joint" type="fixed">
+    <origin xyz="0 0 0.0215" rpy="0 0 0"/>
+    <parent link="base_link"/>
+    <child link="body"/>
+</joint>
+<joint name="top_joint" type="fixed">
+    <origin xyz="0 0 0.0215" rpy="0 0 0"/>
+    <parent link="body"/>
+    <child link="top"/>
+</joint>
+<joint name="casterFront_joint" type="fixed">
+    <origin xyz="0.05 0.0 -0.0065" rpy="0 0 0"/>
+    <parent link="base_link"/>
+    <child link="casterFront"/>
+</joint>
+<joint name="casterBallFront_joint" type="fixed">
+    <origin xyz="0.0 0.0 -0.003" rpy="0 0 0"/>
+    <parent link="casterFront"/>
+    <child link="casterBallFront"/>
+</joint>
+<joint name="casterRear_joint" type="fixed">
+    <origin xyz="-0.05 0.0 -0.0065" rpy="0 0 0"/>
+    <parent link="base_link"/>
+    <child link="casterRear"/>
+</joint>
+<joint name="casterBallRear_joint" type="fixed">
+    <origin xyz="0.0 0.0 -0.003" rpy="0 0 0"/>
+    <parent link="casterRear"/>
+    <child link="casterBallRear"/>
+</joint>
+<!-- Head Tilt/Pan -->
+<joint name="servoPanNeck_joint" type="fixed">
+    <origin xyz="0.0 0.0 0.005" rpy="0 0 0"/>
+    <parent link="top"/>
+    <child link="servoPanNeck"/>
+</joint>
+<joint name="head_pan_link" type="revolute">
+    <origin xyz="0.0 0.0 0.02" rpy="0 0 0"/>
+    <axis xyz="0 0 1" />
+    <parent link="servoPanNeck"/>
+    <child link="servoPan"/>
+    <limit effort="100" velocity="1.0" lower="-1.5708" upper="1.5708" />
+</joint>
+<joint name="head_tilt_link" type="revolute">
+    <origin xyz="0.02 0.0 0.015" rpy="0 0 0"/>
+    <axis xyz="0 1 0" />
+    <parent link="servoPan"/>
+    <child link="servoTilt"/> 
+    <limit effort="100" velocity="1.0" lower="-1.0" upper="1.0" />
+</joint>
+<!-- Camera -->
+<joint name="camera_link" type="fixed">
+    <origin xyz="0.0165 0.0 0.01" rpy="0 0 0"/>
+    <parent link="servoTilt"/>
+    <child link="camera"/>
+</joint>
+<!-- Left Wheel Joint -->
+<joint name="jointwheelLeft" type="fixed">
+    <origin xyz="0.0 0.04 0.007" rpy="0 0 0"/>
+    <axis xyz="0 1 0" />
+    <parent link="base_link"/>
+    <child link="wheelLeft"/> 
+</joint>
+<!-- Right Wheel Joint -->
+<joint name="jointwheelRight" type="fixed">
+    <origin xyz="0.0 -0.04 0.007" rpy="0 0 0"/>
+    <axis xyz="0 1 0" />
+    <parent link="base_link"/>
+    <child link="wheelRight"/> 
+</joint>
+<!-- Gazebo plugin for ROS Control -->
+<transmission name="tranRight">
+    <type>transmission_interface/SimpleTransmission</type>
+    <joint name="wheelRight">
+        <hardwareInterface>EffortJointInterface</hardwareInterface>
+    </joint>
+    <actuator name="motorRight">
+        <hardwareInterface>EffortJointInterface</hardwareInterface>
+        <mechanicalReduction>1</mechanicalReduction>
+    </actuator>
+</transmission>
+<transmission name="tranLeft">
+    <type>transmission_interface/SimpleTransmission</type>
+    <joint name="jointLeft">
+        <hardwareInterface>EffortJointInterface</hardwareInterface>
+    </joint>
+    <actuator name="motorLeft">
+        <hardwareInterface>EffortJointInterface</hardwareInterface>
+        <mechanicalReduction>1</mechanicalReduction>
+    </actuator>
+</transmission>
+<gazebo>
+  <plugin name="gazebo_ros_control" filename="libgazebo_ros_control.so">
+    <robotNamespace>/Waveshare_Alphabot2</robotNamespace>
+  </plugin>
+</gazebo>
+</robot>

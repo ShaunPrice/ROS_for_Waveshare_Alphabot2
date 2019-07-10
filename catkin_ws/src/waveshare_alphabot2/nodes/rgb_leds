@@ -1,0 +1,51 @@
+#!/usr/bin/env python
+
+import rospy
+from std_msgs.msg import String
+
+import RPi.GPIO as GPIO
+import time
+
+from waveshare_alphabot2.msg import RGB_LED
+from waveshare_alphabot2.msg import RGB_LED_Array
+from waveshare_alphabot2.msg import RGB_LED_Array_Stamped
+
+
+class led_driver:
+	def __init__(self):
+		rospy.init_node("rgb_leds_driver")
+		rospy.loginfo("Node 'rgb_leds' configuring driver.")
+
+		self.rate = rospy.Rate(rospy.get_param('~rate', 10))
+
+		# Setup subscriber for velocity twist message
+		rospy.Subscriber('rgb_leds', RGB_LED_Array, self.rgbled_callback)
+
+		rospy.loginfo("Node 'rgb_leds' configuration complete.")
+
+	def run(self):
+		rospy.loginfo("Node 'rgb_leds' running.")
+		rospy.loginfo("Node 'rgb_leds' currently does nothing as it required sudo to control the RGB LEDs.")
+		rospy.loginfo("Node 'rgb_leds' TODO: Write seperate service to control LEDs.")
+		while not rospy.is_shutdown():
+			self.rate.sleep()
+
+	def rgbled_callback(self, message):
+		led_number = 0
+		rospy.loginfo("RGB_DATA Received")
+		for rgb_led in message.rgb_led_array:
+			rospy.loginfo("    RGB_DATA: red: "+str(rgb_led.red)+", green: "+str(rgb_led.green)+", blue: "+str(rgb_led.blue))
+			# Create command for service here
+			led_number+=1
+
+		# Call RGB LED Service
+			
+
+def main():
+	rospy.loginfo("Starting node 'rgb_leds'")
+	driver = led_driver()
+	driver.run()
+	rospy.loginfo("Node 'rgb_leds' Stopped")
+
+if __name__ == '__main__':
+	main()

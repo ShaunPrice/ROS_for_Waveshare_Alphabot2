@@ -1,0 +1,89 @@
+#!/usr/bin/env python
+import rospy
+from std_msgs.msg import String
+
+import RPi.GPIO as GPIO
+import time
+
+# IR
+IR = 17
+
+def getkey():
+	if GPIO.input(IR) == 0:
+		count = 0
+		while GPIO.input(IR) == 0 and count < 200:  #9ms
+			count += 1
+			time.sleep(0.00006)
+		if(count < 10):
+			return
+
+		count = 0
+		while GPIO.input(IR) == 1 and count < 80:  #4.5ms
+			count += 1
+			time.sleep(0.00006)
+
+		idx = 0
+		cnt = 0
+		data = [0,0,0,0]
+		for i in range(0,32):
+			count = 0
+			while GPIO.input(IR) == 0 and count < 15:	#0.56ms
+				count += 1
+				time.sleep(0.00006)
+				
+			count = 0
+			while GPIO.input(IR) == 1 and count < 40:   #0: 0.56mx
+				count += 1							   #1: 1.69ms
+				time.sleep(0.00006)
+				
+			if count > 7:
+				data[idx] |= 1<<cnt
+			if cnt == 7:
+				cnt = 0
+				idx += 1
+			else:
+				cnt += 1
+				
+		if data[0]+data[1] == 0xFF and data[2]+data[3] == 0xFF:  #check
+			return data[2]
+		else:
+			return "repeat"
+
+class ir_driver:
+	def __init__(self, ir = 17):
+		rospy.init_node("ir_control")
+		rospy.loginfo("Node 'ir_control' configuring driver.")
+		self.IR = ir
+
+		GPIO.setmode(GPIO.BCM)
+		GPIO.setwarnings(False)
+		GPIO.setup(self.IR,GPIO.IN)
+
+		self.rate = rospy.Rate(rospy.get_param('~rate', 10))
+
+		# Setup publisher for velocity
+		self.pub = rospy.Publisher('ir_remote', String, queue_size=4)
+		rospy.loginfo("Node 'ir_driver' configured.")
+
+	def __del__(self):
+		GPIO.cleanup()
+
+	def run(self):
+		rospy.loginfo("Node 'ir_control' running.")
+		while not rospy.is_shutdown():
+			key = getkey()
+			if(key != None):
+				self.pub.publish(String(str(key)))
+				rospy.loginfo("Node 'ir_control' received key "+str(key)+".")
+			 
+			self.rate.sleep()
+
+def main():
+	rospy.loginfo("Starting Node 'ir_control'.")
+	driver = ir_driver(IR)
+	driver.run()
+	rospy.loginfo("Node 'ir_control' Stopped.")
+
+if __name__ == '__main__':
+	main()
+

@@ -1,0 +1,33 @@
+<package>
+  <name>waveshare_alphabot2</name>
+  <version>0.1.0</version>
+  <description>Waveshare Alphabot 2 Raspberry Pi powered robot.</description>
+  <maintainer email="shaun@priceconsulting.biz">Shaun Price</maintainer>
+  <license>BSD</license>
+  <url type="website">https://github.com/ShaunPrice</url>
+  <url type="repository">https://github.com/ShaunPrice/ROS_for_Waveshare_Alphabot_2.git</url>
+  <url type="bugtracker">https://github.com/ShaunPrice/ROS_for_Waveshare_Alphabot_2/issues</url>
+  
+  <author email="shaun@priceconsulting.biz">Shaun Price</author>
+
+  <buildtool_depend>catkin</buildtool_depend>
+
+  <build_depend>roscpp</build_depend>
+  <build_depend>message_generation</build_depend>
+  <build_depend>rospy</build_depend>
+  <build_depend>std_msgs</build_depend>
+  <build_depend>sensor_msgs</build_depend>
+  <build_depend>raspicam_node</build_depend>
+
+  <run_depend>roscpp</run_depend>
+  <run_depend>rosserial_python</run_depend>
+  <run_depend>message_runtime</run_depend>
+  <run_depend>rospy</run_depend>
+  <run_depend>std_msgs</run_depend>
+  <run_depend>sensor_msgs</run_depend>
+  <run_depend>raspicam_node</run_depend>
+
+  <export>
+    <architecture_independent/>
+  </export>
+</package>
