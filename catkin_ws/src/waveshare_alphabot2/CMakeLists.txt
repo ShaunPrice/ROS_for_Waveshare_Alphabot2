@@ -80,6 +80,7 @@ install(PROGRAMS
   nodes/sensors
   nodes/sound
   cfg/Camera.cfg
+  scripts/test.py
   
   DESTINATION ${CATKIN_PACKAGE_BIN_DESTINATION}
 )
