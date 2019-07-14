@@ -43,6 +43,7 @@
 </link>
 <link name="servoPanNeck">
     <visual>
+        <origin xyz="0.0 0.0 0.0" />
         <geometry>
             <cylinder radius="0.010" length="0.010"/>
         </geometry>
@@ -62,14 +63,14 @@
     <visual>
         <origin xyz="0.005 0.0 0.01" />
         <geometry>
-        <box size="0.02 0.03 0.03"/>
+            <box size="0.02 0.03 0.03"/>
         </geometry>
         <material name="black" />
     </visual>
 </link>
 <link name="camera">
     <visual>
-        <origin xyz="0 0 0" rpy="0 1.5708 0"/>
+        <origin xyz="0 0 0" rpy="0 0 0"/>
         <geometry>
             <cylinder radius="0.0075" length="0.005"/>
         </geometry>
@@ -173,14 +174,14 @@
     <parent link="top"/>
     <child link="servoPanNeck"/>
 </joint>
-<joint name="head_pan_link" type="revolute">
+<joint name="headPan_joint" type="revolute">
     <origin xyz="0.0 0.0 0.02" rpy="0 0 0"/>
     <axis xyz="0 0 1" />
     <parent link="servoPanNeck"/>
     <child link="servoPan"/>
     <limit effort="100" velocity="1.0" lower="-1.5708" upper="1.5708" />
 </joint>
-<joint name="head_tilt_link" type="revolute">
+<joint name="headTilt_joint" type="revolute">
     <origin xyz="0.02 0.0 0.015" rpy="0 0 0"/>
     <axis xyz="0 1 0" />
     <parent link="servoPan"/>
@@ -188,20 +189,20 @@
     <limit effort="100" velocity="1.0" lower="-1.0" upper="1.0" />
 </joint>
 <!-- Camera -->
-<joint name="camera_link" type="fixed">
+<joint name="camera_joint" type="fixed">
     <origin xyz="0.0165 0.0 0.01" rpy="0 0 0"/>
     <parent link="servoTilt"/>
     <child link="camera"/>
 </joint>
 <!-- Left Wheel Joint -->
-<joint name="jointwheelLeft" type="fixed">
+<joint name="wheelLeft_joint" type="fixed">
     <origin xyz="0.0 0.04 0.007" rpy="0 0 0"/>
     <axis xyz="0 1 0" />
     <parent link="base_link"/>
     <child link="wheelLeft"/> 
 </joint>
 <!-- Right Wheel Joint -->
-<joint name="jointwheelRight" type="fixed">
+<joint name="wheelRight_joint" type="fixed">
     <origin xyz="0.0 -0.04 0.007" rpy="0 0 0"/>
     <axis xyz="0 1 0" />
     <parent link="base_link"/>

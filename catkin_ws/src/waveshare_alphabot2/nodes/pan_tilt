@@ -2,7 +2,8 @@
 
 import rospy
 import roslib
-
+import rospy
+import tf
 from waveshare_alphabot2.msg import Pan_Tilt
 
 import time
@@ -32,6 +33,7 @@ class PCA9685:
 
 	def __init__(self, address=0x40, debug=False):
 		rospy.loginfo("Node 'camera_pan_tilt' configuring PCA9685")
+
 		self.bus = smbus.SMBus(1)
 		self.address = address
 		self.debug = debug
@@ -83,6 +85,8 @@ class camera_pan_tilt_driver:
 	#  Set HPulse and VPulse to half way (500 to 2500)
 	HPulse = 1500
 	VPulse = 1500
+	pan = 0
+	tilt = 0
 
 	def __init__(self):
 		rospy.init_node("camera_pan_tilt_driver")
@@ -105,20 +109,33 @@ class camera_pan_tilt_driver:
 
 	def run(self):
 		rospy.loginfo("Node 'pan_tilt' running.")
+		
+		# Create TransformBroadcastrer
+		br = tf.TransformBroadcaster()
+
 		while not rospy.is_shutdown():
+			# Send Pan tf
+			br.sendTransform((0.0, 0.0, 0.0),
+				tf.transformations.quaternion_from_euler(0.0, 0.0, self.pan),
+				rospy.Time.now(), "servoPan", "servoPanNeck")
+			# Send Tilt tf
+			br.sendTransform((0.0, 0.0, 0.0),
+				tf.transformations.quaternion_from_euler(0.0, 0.0, self.tilt),
+				rospy.Time.now(), "servoTilt", "servoPan")
+
 			self.rate.sleep()
 
 	def pan_tilt_callback(self, message):
 		rospy.loginfo("Node 'camera_pan_tilt' message received.")
 		
-		pan = message.pan
-		tilt = message.tilt
-		rospy.loginfo("Node 'camera_pan_tilt' Pan= "+str(pan)+".")
-		rospy.loginfo("Node 'camera_pan_tilt' Tilt="+str(tilt)+".")
+		self.pan = message.pan
+		self.tilt = message.tilt
+		rospy.loginfo("Node 'camera_pan_tilt' Pan= "+str(self.pan)+".")
+		rospy.loginfo("Node 'camera_pan_tilt' Tilt="+str(self.tilt)+".")
 
 		# Convert from radians to pulses (500 - 2500)
-		self.HPulse = int(-pan  * (1000 / (math.pi / 2)) + 1500)
-		self.VPulse = int(-tilt * (1000 / (math.pi / 2)) + 1500)
+		self.HPulse = int(-self.pan  * (1000 / (math.pi / 2)) + 1500)
+		self.VPulse = int(-self.tilt * (1000 / (math.pi / 2)) + 1500)
 		
 		self.pwm.setServoPulse(1,self.VPulse)
 		self.pwm.setServoPulse(0,self.HPulse)
