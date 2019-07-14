@@ -93,6 +93,6 @@ Source the ROS code:
 
 This is in the ~/bashrc file but we need to reload it after a build unless we reboot the robot.
 
-Launch the Alphabot2 robot with the following launch file to make sure everythin is working:
+Launch the Alphabot2 robot with the following launch file to make sure the servos and motors are working:
 
     roslaunch waveshare_alphabot2 Alphabot2_test.launch
