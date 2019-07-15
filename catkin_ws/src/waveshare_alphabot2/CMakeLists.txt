@@ -79,8 +79,9 @@ install(PROGRAMS
   nodes/rgb_leds
   nodes/sensors
   nodes/sound
-  cfg/Camera.cfg
   scripts/test.py
+  cfg/Camera.cfg
+  params/raspicam_node.yaml
   
   DESTINATION ${CATKIN_PACKAGE_BIN_DESTINATION}
 )
@@ -89,6 +90,7 @@ install(DIRECTORY
   cfg
   launch
   nodes
+  params
   scripts
   rviz
   urdf

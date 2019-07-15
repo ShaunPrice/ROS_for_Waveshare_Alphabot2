@@ -56,4 +56,7 @@
 
     <param name="framerate" value="30"/>
   </node>
+  <!-- Reconfigure the camera node -->
+  <node name="dynamic_reconfigure_load" pkg="dynamic_reconfigure" type="dynparam" args="load /raspicam_node $(find waveshare_alphabot2)/params/raspicam_node.yaml" />
+
 </launch>
