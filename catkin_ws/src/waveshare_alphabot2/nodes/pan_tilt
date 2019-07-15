@@ -31,6 +31,7 @@ class PCA9685:
 	__ALLLED_OFF_L	= 0xFC
 	__ALLLED_OFF_H	= 0xFD
 
+
 	def __init__(self, address=0x40, debug=False):
 		rospy.loginfo("Node 'camera_pan_tilt' configuring PCA9685")
 
@@ -87,6 +88,14 @@ class camera_pan_tilt_driver:
 	VPulse = 1500
 	pan = 0
 	tilt = 0
+	pan_offset = 0
+	tilt_offset = 0
+	pan_center_pulse = 1500
+	tilt_center_pulse = 1500
+	pan_limit_left = 1.5
+	pan_limit_right = 1.5
+	tilt_limit_up = 1.5
+	tilt_limit_down = 0.8
 
 	def __init__(self):
 		rospy.init_node("camera_pan_tilt_driver")
@@ -96,6 +105,27 @@ class camera_pan_tilt_driver:
 
 		self.pwm = PCA9685(0x40)
 		self.pwm.setPWMFreq(50)
+
+		self.pan_offset = rospy.get_param('~pan_offset')
+		self.tilt_offset = rospy.get_param('~tilt_offset')
+		self.pan_limit_left = rospy.get_param('~pan_limit_left')
+		self.pan_limit_right = rospy.get_param('~pan_limit_right')
+		self.tilt_limit_up = rospy.get_param('~tilt_limit_up')
+		self.tilt_lmit_down = rospy.get_param('~tilt_limit_down')
+
+		rospy.loginfo("Node 'camera_pan_tilt' pan_offset = "+str(self.pan_offset)+".")
+		rospy.loginfo("Node 'camera_pan_tilt' tilt_offset = "+str(self.tilt_offset)+".")
+		rospy.loginfo("Node 'camera_pan_tilt' pan_limit_left = "+str(self.pan_limit_left)+".")
+		rospy.loginfo("Node 'camera_pan_tilt' pan_limit_right = "+str(self.pan_limit_right)+".")
+		rospy.loginfo("Node 'camera_pan_tilt' tilt_limit_up = "+str(self.tilt_limit_up)+".")
+		rospy.loginfo("Node 'camera_pan_tilt' tilt_lmit_down = "+str(self.tilt_lmit_down)+".")
+
+		# Center servos
+		self.pan_center_pulse = int(-self.pan_offset  * (1000 / (math.pi / 2)) + self.pan_center_pulse)
+		self.tilt_center_pulse = int(-self.tilt_offset * (1000 / (math.pi / 2)) + self.tilt_center_pulse)
+
+		self.HPulse = self.pan_center_pulse
+		self.VPulse = self.tilt_center_pulse
 
 		#Set the Horizontal servo parameters
 		self.pwm.setServoPulse(0,self.HPulse)
@@ -128,14 +158,24 @@ class camera_pan_tilt_driver:
 	def pan_tilt_callback(self, message):
 		rospy.loginfo("Node 'camera_pan_tilt' message received.")
 		
-		self.pan = message.pan
-		self.tilt = message.tilt
+		# limit the servo pan
+		if message.pan >=0:
+			self.pan = min([message.pan, self.pan_limit_right])
+		else:
+			self.pan = max([message.pan, -self.pan_limit_left])
+
+		# Limit the servo tilt
+		if message.tilt >=0:
+    			self.tilt = min([message.tilt, self.tilt_limit_up])
+		else:
+			self.tilt = max([message.tilt, -self.tilt_limit_down])
+
 		rospy.loginfo("Node 'camera_pan_tilt' Pan= "+str(self.pan)+".")
 		rospy.loginfo("Node 'camera_pan_tilt' Tilt="+str(self.tilt)+".")
 
 		# Convert from radians to pulses (500 - 2500)
-		self.HPulse = int(-self.pan  * (1000 / (math.pi / 2)) + 1500)
-		self.VPulse = int(-self.tilt * (1000 / (math.pi / 2)) + 1500)
+		self.HPulse = int(-self.pan  * (1000 / (math.pi / 2)) + self.pan_center_pulse)
+		self.VPulse = int(-self.tilt * (1000 / (math.pi / 2)) + self.tilt_center_pulse)
 		
 		self.pwm.setServoPulse(1,self.VPulse)
 		self.pwm.setServoPulse(0,self.HPulse)
