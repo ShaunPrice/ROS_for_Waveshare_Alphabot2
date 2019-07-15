@@ -3,6 +3,7 @@
 This repositiory is a ROS ([Robot Operating System](http://www.ros.org)) implementation for the [Waveshare Alphabot2 Pi](https://www.waveshare.com/product/robotics/alphabot2-pi-acce-pack.htm). IT's based on the  [Ubiquity Robotics](https://ubiquityrobotics.com/) [ROS for Raspberry Pi image](https://downloads.ubiquityrobotics.com/pi.html).
 
 ## TODO
+- [ ] Fiducial rviz needs to be updated to display correctly.
 - [ ] Fix issue with the IR Remote not receiving commands.
 - [ ] Write a server and node for the ws2812b RGB LED's.
 - [ ] Write demo applications.
