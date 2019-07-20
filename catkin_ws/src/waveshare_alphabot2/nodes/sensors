@@ -1,6 +1,7 @@
 #!/usr/bin/env python
 
 import rospy
+from std_msgs.msg import Int16
 from std_msgs.msg import Header
 
 import RPi.GPIO as GPIO

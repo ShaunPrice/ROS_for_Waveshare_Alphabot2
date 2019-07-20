@@ -81,7 +81,6 @@ install(PROGRAMS
   nodes/sound
   scripts/test.py
   cfg/Camera.cfg
-  params/raspicam_node.yaml
   
   DESTINATION ${CATKIN_PACKAGE_BIN_DESTINATION}
 )

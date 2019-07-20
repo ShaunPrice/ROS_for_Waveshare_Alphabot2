@@ -5,5 +5,5 @@
 <launch>
     <!-- Default ROS output location, set this to 'log' to write stdout to a log file instead of the screen -->
     <arg name="output" default="screen" doc="ROS stdout output location (log/screen)"/>    
-    <include file="$(find fiducial_slam)/launch/fiducial_rviz.launch" />
+    <node pkg="rviz" type="rviz" name="$(anon rviz)" args="-d $(find waveshare_alphabot2)/rviz/fiducial_slam.rviz"/>
 </launch>

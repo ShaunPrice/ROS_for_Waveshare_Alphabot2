@@ -1,7 +1,7 @@
 #!/usr/bin/env python
 
 '''
-Controls the Waveshare Alphabot2 romot wheel motors
+Controls the Waveshare Alphabot2 robot wheel motors
 Updated code from DingoOz: https://github.com/DingoOz/Alphabot2_Pi_ROS/blob/master/src/alphabot2/src/driver_node
 Author: Shaun Price (https://github.com/ShaunPrice)
 '''

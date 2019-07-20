@@ -10,6 +10,7 @@
 
   <param name="robot_description" command="$(find xacro)/xacro --inorder $(arg model)" />
   <node name="robot_state_publisher" pkg="robot_state_publisher" type="state_publisher" />
+  <node pkg="tf" type="static_transform_publisher" name="odom_base_link_broadcaster" args="0 0 0 0 0 0 1 odom base_link 100" />
   <node pkg="waveshare_alphabot2" type="ir_control" name="ir_control" output="$(arg output)"/>
   <node pkg="waveshare_alphabot2" type="joystick" name="joystick" output="$(arg output)"/>
   <node pkg="waveshare_alphabot2" type="motion" name="motion" output="$(arg output)"/>
@@ -54,9 +55,9 @@
     <param name="width" value="1280"/>
     <param name="height" value="720"/>
 
+    <param name="hFlip" type="bool" value="true" />
+    <param name="vFlip" type="bool" value="true" />
+    
     <param name="framerate" value="30"/>
   </node>
-  <!-- Reconfigure the camera node -->
-  <node name="dynamic_reconfigure_load" pkg="dynamic_reconfigure" type="dynparam" args="load /raspicam_node $(find waveshare_alphabot2)/params/raspicam_node.yaml" />
-
 </launch>

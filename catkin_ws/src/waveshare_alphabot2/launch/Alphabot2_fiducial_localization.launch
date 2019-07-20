@@ -1,0 +1,12 @@
+<!--
+    This launch file runs the Waveshare Alphabot 2 Robot ROS nodes.
+-->
+<launch>
+    <!-- Default ROS output location, set this to 'log' to write stdout to a log file instead of the screen -->
+    <arg name="output" default="screen" doc="ROS stdout output location (log/screen)"/>
+    
+    <include file="$(find waveshare_alphabot2)/launch/Alphabot2_fiducial_slam.launch" />
+
+    <!-- Set for Localization Only -->
+    <arg name="read_only_map" value="true"/>
+</launch>

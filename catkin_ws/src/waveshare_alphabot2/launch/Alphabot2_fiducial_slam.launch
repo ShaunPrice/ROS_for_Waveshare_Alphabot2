@@ -14,16 +14,18 @@
     <arg name="odom_frame" default="odom"/>
     <arg name="base_frame" default="base_link"/>
     <arg name="publish_tf" default="true"/>
-    <arg name="tf_publish_interval" default="0.2"/>
+    <arg name="tf_publish_interval" default="0.1"/>
     <arg name="future_date_transforms" default="0.0"/>
     <arg name="publish_6dof_pose" default="false"/>
     <arg name="fiducial_len" default="0.14"/>
     <arg name="systematic_error" default="0.01"/>
     <arg name="do_pose_estimation" default="false"/>
     <arg name="covariance_diagonal" default="[0.0, 0.0, 0.0, 0.0, 0.0, 0.0]"/>
+    <arg name="read_only_map" default="false"/>
 
     <include file="$(find aruco_detect)/launch/aruco_detect.launch"/>
     <node type="fiducial_slam" pkg="fiducial_slam" output="screen" name="fiducial_slam">
+        <!-- We're creating a new map so clear the old map -->
         <param name="map_file" value="$(env HOME)/.ros/slam/map.txt" />
         <param name="map_frame" value="$(arg map_frame)" />
         <param name="odom_frame" value="$(arg odom_frame)" />
@@ -36,6 +38,7 @@
         <param name="sum_error_in_quadrature" value="true"/>
         <param name="fiducial_len" value="$(arg fiducial_len)"/>
         <param name="covariance_diagonal" value="$(arg covariance_diagonal)"/>
+        <param name="read_only_map" value="$(arg read_only_map)"/>
         <remap from="/camera_info" to="$(arg camera)/camera_info"/>
     </node>
 </launch>

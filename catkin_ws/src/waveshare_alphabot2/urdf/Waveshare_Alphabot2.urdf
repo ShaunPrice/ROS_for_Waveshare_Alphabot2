@@ -79,7 +79,7 @@
 </link>
 <link name="wheelLeft">
     <visual>
-        <origin xyz="0 0 0" rpy="1.5708 0 0"/>
+        <origin xyz="0 0 0" rpy="0 0 0"/>
         <axis xyz="0 0 0.0" />
         <geometry>
             <cylinder radius="0.022" length="0.025"/>
@@ -190,7 +190,7 @@
 </joint>
 <!-- Camera -->
 <joint name="camera_joint" type="fixed">
-    <origin xyz="0.0165 0.0 0.01" rpy="0 0 0"/>
+    <origin xyz="0.0165 0.0 0.01" rpy="-1.5708 0 -1.5708"/>
     <parent link="servoTilt"/>
     <child link="camera"/>
 </joint>

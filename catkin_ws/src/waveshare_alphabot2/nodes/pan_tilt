@@ -150,7 +150,7 @@ class camera_pan_tilt_driver:
 				rospy.Time.now(), "servoPan", "servoPanNeck")
 			# Send Tilt tf
 			br.sendTransform((0.0, 0.0, 0.0),
-				tf.transformations.quaternion_from_euler(0.0, 0.0, self.tilt),
+				tf.transformations.quaternion_from_euler(0.0, self.tilt, 0.0),
 				rospy.Time.now(), "servoTilt", "servoPan")
 
 			self.rate.sleep()
@@ -160,9 +160,9 @@ class camera_pan_tilt_driver:
 		
 		# limit the servo pan
 		if message.pan >=0:
-			self.pan = min([message.pan, self.pan_limit_right])
+			self.pan = min([message.pan, self.pan_limit_left])
 		else:
-			self.pan = max([message.pan, -self.pan_limit_left])
+			self.pan = max([message.pan, -self.pan_limit_right])
 
 		# Limit the servo tilt
 		if message.tilt >=0:
@@ -174,8 +174,8 @@ class camera_pan_tilt_driver:
 		rospy.loginfo("Node 'camera_pan_tilt' Tilt="+str(self.tilt)+".")
 
 		# Convert from radians to pulses (500 - 2500)
-		self.HPulse = int(-self.pan  * (1000 / (math.pi / 2)) + self.pan_center_pulse)
-		self.VPulse = int(-self.tilt * (1000 / (math.pi / 2)) + self.tilt_center_pulse)
+		self.HPulse = int(self.pan  * (1000 / (math.pi / 2)) + self.pan_center_pulse)
+		self.VPulse = int(self.tilt * (1000 / (math.pi / 2)) + self.tilt_center_pulse)
 		
 		self.pwm.setServoPulse(1,self.VPulse)
 		self.pwm.setServoPulse(0,self.HPulse)
