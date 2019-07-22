@@ -41,4 +41,5 @@
         <param name="read_only_map" value="$(arg read_only_map)"/>
         <remap from="/camera_info" to="$(arg camera)/camera_info"/>
     </node>
+    <node type="move_basic" pkg="move_basic" output="screen" name="move_basic" />
 </launch>
