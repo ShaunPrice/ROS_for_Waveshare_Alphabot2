@@ -14,7 +14,6 @@
   <node pkg="waveshare_alphabot2" type="ir_control" name="ir_control" output="$(arg output)"/>
   <node pkg="waveshare_alphabot2" type="joystick" name="joystick" output="$(arg output)"/>
   <node pkg="waveshare_alphabot2" type="motion" name="motion" output="$(arg output)"/>
-  <node pkg="waveshare_alphabot2" type="rgb_leds" name="rgb_leds" output="$(arg output)"/>
   <node pkg="waveshare_alphabot2" type="sensors" name="sensors" output="$(arg output)"/>
   <node pkg="waveshare_alphabot2" type="sound" name="sound" output="$(arg output)"/>
 
@@ -35,12 +34,21 @@
     <param name="tilt_limit_down" value="$(arg camera_tilt_limit_down)"/>
   </node>
 
+  <!-- RGB_LED Server Address and Port for the Waveshare Alphabot 2 robot -->
+  <arg name="server_address" default="http://localhost"/>
+  <arg name="server_port" default="2812"/>
+
+  <node pkg="waveshare_alphabot2" type="rgb_leds" name="rgb_leds" output="$(arg output)">
+    <param name="server_address" value="$(arg server_address)"/>
+    <param name="server_port" value="$(arg server_port)"/>
+  </node>
+
   <!-- Raspberry Pi Camera -->
   <arg name="enable_raw" default="false"/>
   <arg name="enable_imv" default="false"/>
   <arg name="camera_id" default="0"/>
   <arg name="camera_frame_id" default="camera"/>
-  <arg name="camera_name" default="camerav2_1280x720"/>
+  <arg name="camera_name" default="camerav1_1280x720"/>
 
   <node type="raspicam_node" pkg="raspicam_node" name="camera" output="screen">
     <param name="private_topics" value="true"/>

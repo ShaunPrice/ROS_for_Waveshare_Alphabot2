@@ -1,0 +1,13 @@
+[Unit]
+Description=Waveshare Alfabot 2 RGB LED Service
+After=multi-user.target
+DefaultDependencies=false
+Conflicts=getty@tty1.service
+
+[Service]
+Type=simple
+ExecStart=/usr/bin/python2 /usr/bin/wsrgb_service.py
+StandardInput=tty-force
+
+[Install]
+WantedBy=multi-user.target

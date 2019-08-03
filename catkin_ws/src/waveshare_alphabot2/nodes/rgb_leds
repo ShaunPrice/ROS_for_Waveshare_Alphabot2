@@ -6,46 +6,78 @@ from std_msgs.msg import String
 import RPi.GPIO as GPIO
 import time
 
-from waveshare_alphabot2.msg import RGB_LED
-from waveshare_alphabot2.msg import RGB_LED_Array
-from waveshare_alphabot2.msg import RGB_LED_Array_Stamped
+import requests
 
+from waveshare_alphabot2.msg import RGB_LED
 
 class led_driver:
-	def __init__(self):
-		rospy.init_node("rgb_leds_driver")
-		rospy.loginfo("Node 'rgb_leds' configuring driver.")
+    server_address = "http://localhost/"        
+    server_port = "2812"
 
-		self.rate = rospy.Rate(rospy.get_param('~rate', 10))
+    def __init__(self):
+        rospy.init_node("rgb_leds_driver")
+        rospy.loginfo("Node 'rgb_leds' configuring driver.")
 
-		# Setup subscriber for velocity twist message
-		rospy.Subscriber('rgb_leds', RGB_LED_Array, self.rgbled_callback)
+        self.rate = rospy.Rate(rospy.get_param('~rate', 10))
+        self.server_address = rospy.get_param('~server_address')
+        self.server_port = rospy.get_param('~server_port')
 
-		rospy.loginfo("Node 'rgb_leds' configuration complete.")
+        # Setup subscriber for rgb_led message
+        rospy.Subscriber('rgb_leds', RGB_LED, self.rgbled_callback)
 
-	def run(self):
-		rospy.loginfo("Node 'rgb_leds' running.")
-		rospy.loginfo("Node 'rgb_leds' currently does nothing as it required sudo to control the RGB LEDs.")
-		rospy.loginfo("Node 'rgb_leds' TODO: Write seperate service to control LEDs.")
-		while not rospy.is_shutdown():
-			self.rate.sleep()
+        rospy.loginfo("Node 'rgb_leds' configuration complete.")
 
-	def rgbled_callback(self, message):
-		led_number = 0
-		rospy.loginfo("RGB_DATA Received")
-		for rgb_led in message.rgb_led_array:
-			rospy.loginfo("    RGB_DATA: red: "+str(rgb_led.red)+", green: "+str(rgb_led.green)+", blue: "+str(rgb_led.blue))
-			# Create command for service here
-			led_number+=1
+    def run(self):
+        rospy.loginfo("Node 'rgb_leds' running.")
+        while not rospy.is_shutdown():
+            self.rate.sleep()
 
-		# Call RGB LED Service
-			
+    def rgbled_callback(self, message):
+        rospy.loginfo("Node 'rgb_leds' RGB_DATA Received")
+        rospy.loginfo("    RGB_LED_DATA: function: "+str(message.function)+", color: "+str(message.color) \
+            +", LED 1 color: "+str(message.led1_color) \
+            +", LED 2 color: "+str(message.led2_color) \
+            +", LED 3 color: "+str(message.led3_color) \
+            +", LED 4 color: "+str(message.led4_color) \
+            +", delay: "+str(message.delay))
+
+        # Create command for service here and call RGB LED Service
+        if message.function.lower().strip() == "setled":
+            url = self.server_address+":"+str(self.server_port)+"/setLED/"+message.led1_color+"/"+message.led2_color+"/"+message.led3_color+"/"+message.led4_color+"/"
+        elif message.function.lower().strip() == "setallred":
+            url = self.server_address+":"+str(self.server_port)+"/setAllRed/"
+        elif message.function.lower().strip() == "setallgreen":
+            url = self.server_address+":"+str(self.server_port)+"/setAllGreen/"
+        elif message.function.lower().strip() == "setallblue":
+            url = self.server_address+":"+str(self.server_port)+"/setAllBlue/"
+        elif message.function.lower().strip() == "rainbow":
+            url = self.server_address+":"+str(self.server_port)+"/setMode/rainbow/"+str(message.delay)+"/"
+        elif message.function.lower().strip() == "theaterchaserainbow":
+            url = self.server_address+":"+str(self.server_port)+"/setMode/theaterChaseRainbow/"+str(message.delay)+"/"
+        elif message.function.lower().strip() == "colorwipe" and message.delay > 0:
+            url = self.server_address+":"+str(self.server_port)+"/setMode/colorWipe/"+message.color+"/"+str(message.delay)+"/"
+        elif message.function.lower().strip() == "colorwipe" and message.delay <= 0:
+            url = self.server_address+":"+str(self.server_port)+"/setMode/colorWipe/"+message.color+"/0/"
+        elif message.function.lower().strip() == "theaterchase" and message.delay > 0:
+            url = self.server_address+":"+str(self.server_port)+"/setMode/theaterChase/"+message.color+"/"+str(message.delay)+"/"
+        elif message.function.lower().strip() == "theaterchase" and message.delay <= 0:
+            url = self.server_address+":"+str(self.server_port)+"/setMode/theaterChase/"+message.color+"/0/"
+        elif message.function.lower().strip() == "delay" and message.delay > 0:
+            url = self.server_address+":"+str(self.server_port)+"/setDelay/"+str(message.delay)+"/"
+        else:
+            url = self.server_address+":"+str(self.server_port)+"/"
+
+        rospy.loginfo("Node 'rgb_leds' Request: "+url)
+        
+        response = requests.put(url)
+
+        rospy.loginfo("Node 'rgb_leds' Response: "+str(response.status_code))
 
 def main():
-	rospy.loginfo("Starting node 'rgb_leds'")
-	driver = led_driver()
-	driver.run()
-	rospy.loginfo("Node 'rgb_leds' Stopped")
+    rospy.loginfo("Starting node 'rgb_leds'")
+    driver = led_driver()
+    driver.run()
+    rospy.loginfo("Node 'rgb_leds' Stopped")
 
 if __name__ == '__main__':
-	main()
+    main()

@@ -27,8 +27,6 @@ add_message_files(
   Pan_Tilt.msg
   Pan_Tilt_Stamped.msg
   RGB_LED.msg
-  RGB_LED_Array.msg
-  RGB_LED_Array_Stamped.msg
 )
 
 generate_messages(
@@ -38,7 +36,7 @@ generate_messages(
 
 #add dynamic reconfigure api
 generate_dynamic_reconfigure_options(
-  cfg/Camera.cfg
+
 )
 
 
@@ -80,16 +78,13 @@ install(PROGRAMS
   nodes/sensors
   nodes/sound
   scripts/test.py
-  cfg/Camera.cfg
   
   DESTINATION ${CATKIN_PACKAGE_BIN_DESTINATION}
 )
 
 install(DIRECTORY
-  cfg
   launch
   nodes
-  params
   scripts
   rviz
   urdf

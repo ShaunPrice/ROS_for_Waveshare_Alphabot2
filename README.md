@@ -3,9 +3,9 @@
 This repositiory is a ROS ([Robot Operating System](http://www.ros.org)) implementation for the [Waveshare Alphabot2 Pi](https://www.waveshare.com/product/robotics/alphabot2-pi-acce-pack.htm). IT's based on the  [Ubiquity Robotics](https://ubiquityrobotics.com/) [ROS for Raspberry Pi image](https://downloads.ubiquityrobotics.com/pi.html).
 
 ## TODO
-- [ ] Fiducial rviz needs to be updated to display correctly.
+- [x] Fiducial rviz needs to be updated to display correctly.
 - [ ] Fix issue with the IR Remote not receiving commands.
-- [ ] Write a server and node for the ws2812b RGB LED's.
+- [x] Write a server and node for the ws2812b RGB LED's.
 - [ ] Write demo applications.
 
 ## Getting Started with the Waveshare Alphabot2 and ROS
@@ -28,12 +28,6 @@ Download the image from here:
 
 Install the image onto your Raspberry Pi using the Ubiquity Robotics instructions.
 
-## Install the RGB LED library
-> This funtion is not currently finished. A server is required due to the permissions required.
-Install the ws2812b RGB LED driver python library for the Raspberry PI:
-
-    sudo pip install rpi_ws281x
-
 The Ubiquity Robotic Raspberry Pi image includes a dtoverlay which configures the GPIO for some functions they have implemented. Unfortunately, this feature also turns on the Alphabot2's motors at startup. You need to remove this overlay from the **/boot/config.txt** file as follows:
 
     sudo nano /boot/config.txt
@@ -43,6 +37,48 @@ Go to the end of the file and remove or comment out (place a # in front of it) t
     dtoverlay=ubiquity-led-buttons
 
 Save the file (CTRL+x, y, Enter).
+
+## Install the RGB LED library
+This service is required for the ROS code to talk to communicate with the RGB LED's on the robot. The communication requires elevated priviledges which is obtained by running the following python flask web application on port 2812. The service is only visibly locally to other applications on the robot.
+
+Install the dependancies:
+
+    sudo pip install rpi_ws281x flask
+
+Install the RGB LED service to enable ROS to control the RGB LED's:
+
+    cd ~/wsRGB
+    chmod +x setup.sh
+    sudo ./setup.sh
+
+To start and stop the service manually you can use the following commands:
+
+    sudo systemctl stop wsrgb.service          #To stop running service 
+    sudo systemctl start wsrgb.service         #To start running service 
+    sudo systemctl restart wsrgb.service       #To restart running service 
+    sudo systemctl status wsrgb.service        #To view the status of the service 
+
+To test if the service is running you can try some of the following commands:
+
+    curl -i -X PUT http://localhost:2812/setLED/ff0000/00ff00/0000ff/ff00ff/
+    curl -i -X PUT http://localhost:2812/setMode/theaterChaseRainbow/50/
+    curl -i -X PUT http://localhost:2812/setMode/colorWipe/ff00ff/50/
+    curl -i -X PUT http://localhost:2812/setAllRed/  
+    curl -i -X PUT http://localhost:2812/setAllGreen/  
+    curl -i -X PUT http://localhost:2812/setAllBlue/
+    curl -i -X PUT http://localhost:2812/setDelay/250/  
+    curl -i -X PUT http://localhost:2812/setMode/theaterChase/ff00ff/100/
+
+To test using ROS use the following commands once ROS is installed and running:
+
+    rostopic pub /rgb_leds waveshare_alphabot2/RGB_LED "'setLED'" "''" "'ff0000'" "'00ff00'" "'0000ff'" "'ff00ff'" 50
+    rostopic pub /rgb_leds waveshare_alphabot2/RGB_LED "'setAllRed'" "''" "''" "''" "''" "''" 50
+    rostopic pub /rgb_leds waveshare_alphabot2/RGB_LED "'setAllGreen'" "''" "''" "''" "''" "''" 50
+    rostopic pub /rgb_leds waveshare_alphabot2/RGB_LED "'setAllBlue'" "''" "''" "''" "''" "''" 50
+    rostopic pub /rgb_leds waveshare_alphabot2/RGB_LED "'colorWipe'" "'ff00ff'" "''" "''" "''" "''" 50
+    rostopic pub /rgb_leds waveshare_alphabot2/RGB_LED "'rainbow'" "''" "''" "''" "''" "''" 50
+    rostopic pub /rgb_leds waveshare_alphabot2/RGB_LED "'theaterChaseRainbow'" "''" "''" "''" "''" "''" 50
+    rostopic pub /rgb_leds waveshare_alphabot2/RGB_LED "'theaterChase'" "'ffffff'" "''" "''" "''" "''" 50
 
 ## Configure the Camera Node
 The solution uses the UbiquityRobotics [raspicam_node](https://github.com/UbiquityRobotics/raspicam_node) which is installed on the Ubiquity Robotics ROS image by default. Use the instructions from the nodes [Github repository](https://github.com/UbiquityRobotics/raspicam_node) to configure it.
