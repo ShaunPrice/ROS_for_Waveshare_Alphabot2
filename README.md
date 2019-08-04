@@ -3,10 +3,7 @@
 This repositiory is a ROS ([Robot Operating System](http://www.ros.org)) implementation for the [Waveshare Alphabot2 Pi](https://www.waveshare.com/product/robotics/alphabot2-pi-acce-pack.htm). IT's based on the  [Ubiquity Robotics](https://ubiquityrobotics.com/) [ROS for Raspberry Pi image](https://downloads.ubiquityrobotics.com/pi.html).
 
 ## TODO
-- [x] Fiducial rviz needs to be updated to display correctly.
-- [ ] Fix issue with the IR Remote not receiving commands.
-- [x] Write a server and node for the ws2812b RGB LED's.
-- [ ] Write demo applications.
+- [ ] Write more demo applications.
 
 ## Getting Started with the Waveshare Alphabot2 and ROS
 To run the ROS package you need to perform the following:
@@ -80,6 +77,86 @@ To test using ROS use the following commands once ROS is installed and running:
     rostopic pub /rgb_leds waveshare_alphabot2/RGB_LED "'theaterChaseRainbow'" "''" "''" "''" "''" "''" 50
     rostopic pub /rgb_leds waveshare_alphabot2/RGB_LED "'theaterChase'" "'ffffff'" "''" "''" "''" "''" 50
 
+## Install the IR Remote
+The installation uses the lirc remote package and assumes your Waveshare Alphabot 2 came with a Car MP3 remote. If not you will need to configure the remote using the **irrecord** utility.
+
+**The following was updated from the following web page: http://ozzmaker.com/how-to-control-the-gpio-on-a-raspberry-pi-with-an-ir-remote/**
+
+Install the lirc packages:
+
+    sudo apt-get install lirc liblircclient-dev ir-keytable
+
+Edit the **/etc/modules** file:
+
+    sudo nano /etc/modules
+
+Append the following lines:
+
+    lirc_dev
+    lirc_rpi gpio_in_pin=17
+
+Edit the **/boot/config.txt** file:
+
+    sudo nano /boot/config.txt
+
+Uncomment the line starting with **#dtoverlay=lirc-rpi** and append the pin as follows: 
+
+    dtoverlay=lirc-rpi,gpio_in_pin=17
+
+Go to the ~/lirc directory and run the following:
+
+    cd ~/lirc
+    sudo cp hardware.conf /etc/lirc/hardware.conf
+
+Reboot the rebot.
+
+Log back in and test it works:
+
+    sudo /etc/init.d/lirc stop
+    mode2 -d /dev/lirc0
+
+Press some buttons on the remote and you should see something simular to teh following:
+
+    pulse 627
+    space 514
+    pulse 624
+    space 513
+    pulse 599
+    space 521
+    pulse 618
+    space 1668
+    pulse 589
+    space 532
+
+Go to the ~/lirc directory and run the following:
+
+    cd ~/lirc
+    chmod +x setup.sh
+    sudo ./setup.sh
+
+To test the remote is working and the codes are converted type the following command:
+
+    irw
+
+You should receive something like the following:
+
+    0000000000ff30cf 00 KEY_1 CAR_MP3
+    0000000000ff30cf 01 KEY_1 CAR_MP3
+    0000000000ff6897 00 KEY_0 CAR_MP3
+    0000000000ff6897 01 KEY_0 CAR_MP3
+    0000000000ff38c7 00 KEY_5 CAR_MP3
+    0000000000ffa25d 00 KEY_CHANNELDOWN CAR_MP3
+    0000000000ffa25d 01 KEY_CHANNELDOWN CAR_MP3
+    0000000000ffe21d 00 KEY_CHANNELUP CAR_MP3
+    0000000000ffe21d 01 KEY_CHANNELUP CAR_MP3
+    0000000000ff22dd 00 KEY_PREVIOUS CAR_MP3
+    0000000000ff02fd 00 KEY_NEXT CAR_MP3
+    0000000000ff02fd 01 KEY_NEXT CAR_MP3
+    0000000000ffe01f 00 KEY_DOWN CAR_MP3
+    0000000000ffa857 00 KEY_UP CAR_MP3
+
+Your IR Remote Control is complete.
+
 ## Configure the Camera Node
 The solution uses the UbiquityRobotics [raspicam_node](https://github.com/UbiquityRobotics/raspicam_node) which is installed on the Ubiquity Robotics ROS image by default. Use the instructions from the nodes [Github repository](https://github.com/UbiquityRobotics/raspicam_node) to configure it.
 
@@ -113,6 +190,13 @@ Install the python libraries to enable communication with the PCA9685 servo usin
 ## Copy over the Waveshare Alphabot2 ROS package code
 Copy the **catkin_ws** directory and its content to the home folder of the Raspberry Pi. There should already be a **catkin_ws** folder there and you will be copying the code over the top of this folder. 
 
+## Make the Python nodes and scripts executable
+
+    sudo chmod +x ~/catkin_ws/src/waveshare_alphabot2/nodes/*
+    sudo chmod +x ~/catkin_ws/src/waveshare_alphabot2/scripts/*.*
+
+Note: If you also add teh Alphabot2_*.sh files to teh home directory the **Alphabot2_fix.sh** script will do this for you. You'll have to make this script executable first with **chmod +x Alphabot2_fix.sh** and run it with sudo (**sudo ./Alphabot2_fix.sh**).
+
 ## Compile the ROS package
 Change the working directory to **catkin_ws**:
 
@@ -133,3 +217,18 @@ This is in the ~/bashrc file but we need to reload it after a build unless we re
 Launch the Alphabot2 robot with the following launch file to make sure the servos and motors are working:
 
     roslaunch waveshare_alphabot2 Alphabot2_test.launch
+
+## Alphabot2 Shell scripts
+There are serveral Alphabot2 shell scripts in the home directory. THese are used for building and running the Alphabot2 ROS packages. You'll need to make them executable with the command **chmod +x Alphabot2_*.sh** before using them.
+
+The scripts have the following functions:
+
+    Alphabot2_build.sh                          # Builds the Alphabot2 ROS packages
+    Alphabot2_clean.sh                          # Cleans the ROS catkin environment. Usefull if your having issues. run **./Alphabot2_build.sh** to rebuild the ROS packages. 
+    Alphabot2_fix.sh                            # Correct permissions on the ROD Python nodes and scripts. They must be executable for ROS to find them.
+    Alphabot2_run_clear_map.sh                  # Starts ROS and clears the Ubiquity Roboltics Fiducial SLAM example map generated with SLAM.
+    Alphabot2_run_fiducial_localization.sh      # Starts ROS with the Ubiquity Roboltics Fiducial SLAM example in localisation only mode.
+    Alphabot2_run_fiducial_rviz.sh              # Starts ROS rviz for visualisation when running the Ubiquity Roboltics Fiducial SLAM example.
+    Alphabot2_run_fiducial_slam.sh              # Starts ROS with the Ubiquity Roboltics Fiducial SLAM example.
+    Alphabot2_run.sh                            # Starts ROS with the base configuration for the Alphabot2 robot.
+    Alphabot2_run_test.sh                       # Starts ROS with the base configuration for the Alphabot2 robot and tests the basic functionality.

@@ -21,6 +21,7 @@ find_package(Boost REQUIRED)
 add_message_files(
   DIRECTORY msg
   FILES
+  IR.msg
   Line_Follow.msg
   Line_Follow_Stamped.msg
   Obstacle_Stamped.msg
