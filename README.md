@@ -115,7 +115,7 @@ Log back in and test it works:
     sudo /etc/init.d/lirc stop
     mode2 -d /dev/lirc0
 
-Press some buttons on the remote and you should see something simular to teh following:
+Press some buttons on the remote and you should see something simular to the following:
 
     pulse 627
     space 514
@@ -195,7 +195,7 @@ Copy the **catkin_ws** directory and its content to the home folder of the Raspb
     sudo chmod +x ~/catkin_ws/src/waveshare_alphabot2/nodes/*
     sudo chmod +x ~/catkin_ws/src/waveshare_alphabot2/scripts/*.*
 
-Note: If you also add teh Alphabot2_*.sh files to teh home directory the **Alphabot2_fix.sh** script will do this for you. You'll have to make this script executable first with **chmod +x Alphabot2_fix.sh** and run it with sudo (**sudo ./Alphabot2_fix.sh**).
+**Note:** If you also add the Alphabot2_*.sh files to the home directory the **Alphabot2_fix.sh** script will do this for you. You'll have to make this script executable first with **chmod +x Alphabot2_fix.sh** and run it with sudo (**sudo ./Alphabot2_fix.sh**).
 
 ## Compile the ROS package
 Change the working directory to **catkin_ws**:
