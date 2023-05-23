@@ -2,9 +2,6 @@
 <p style="text-align:center"><img alighn="center" src="https://www.waveshare.com/media/catalog/product/cache/1/image/800x800/9df78eab33525d08d6e5fb8d27136e95/a/l/alphabot2-pi-3.jpg" alt="Waveshare Alphabot2"></p>
 This repositiory is a ROS ([Robot Operating System](http://www.ros.org)) implementation for the [Waveshare Alphabot2 Pi](https://www.waveshare.com/product/robotics/alphabot2-pi-acce-pack.htm). IT's based on the  [Ubiquity Robotics](https://ubiquityrobotics.com/) [ROS for Raspberry Pi image](https://downloads.ubiquityrobotics.com/pi.html).
 
-## TODO
-- [ ] Write more demo applications.
-
 ## Getting Started with the Waveshare Alphabot2 and ROS
 To run the ROS package you need to perform the following:
 
